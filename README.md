@@ -27,6 +27,14 @@ Word export uses PDF-to-DOCX layout conversion. This better matches the PDF than
 rebuilding the document separately, but PDF conversion may not preserve every
 layout detail identically in all Word versions.
 
+## Deploy on Render
+
+The included `render.yaml` configures a Python web service using Gunicorn.
+Deploy the repository as a Blueprint, or set the service's build command to
+`pip install -r requirements.txt` and start command to `gunicorn app:app`.
+The `app:app` target means the `app` module (`app.py`) and its Flask instance
+(`app`).
+
 ## Build a Windows executable
 
 On Windows, install Python and run `build_windows.bat` from the project folder.
