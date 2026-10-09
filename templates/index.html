@@ -1,0 +1,328 @@
+<!-- <!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Write Lesson Plan</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body>
+<div class="page-shell">
+<header class="app-header"><a class="back-link" href="{{ url_for('landing') }}">← Home</a><div><h1>Build Your Lesson Plan</h1><p>Complete the sections below, preview your plan, then download as PDF or Word.</p></div></header>
+
+<form action="{{ url_for('preview') }}" method="post" id="lessonForm">
+<section class="card"><div class="section-title"><span>01</span><div><h2>Lesson Details</h2><p>Basic information about the lesson.</p></div></div>
+<div class="grid-4">
+{% for name,label in [('unit','Unit'),('faculty','Faculty'),('branch','Branch'),('course','Course'),('syllabus','Syllabus'),('subject','Subject'),('duration','Duration') ] %}
+<label>{{ label }}<input name="{{ name }}" value="{{ data[name] }}" required></label>
+{% endfor %}
+<label>Date<input type="date" name="date" value="{{ data.date }}"></label>
+<label class="span-2">Lesson / Topic<input name="lesson" value="{{ data.lesson }}" required></label>
+      <label class="span-2">Small logo (optional)<input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp"><input type="hidden" name="logo_data" id="logoData" value="{{ data.logo_data }}"><small>Choose a small PNG/JPG logo; it will appear centered above LESSON PLAN.</small></label>
+</div></section>
+
+<section class="card"><div class="section-title"><span>02</span><div><h2>Objectives</h2><p>Define what learners should achieve.</p></div></div>
+<label>Training Objective<select name="training_verb"><option value="">Choose a verb</option>{% for verb in verbs %}<option value="{{ verb }}" {% if data.training_objective.verb == verb %}selected{% endif %}>{{ verb }}</option>{% endfor %}</select></label>
+<input name="training_objective" value="{{ data.training_objective.statement }}" placeholder="Enter training objective">
+<h3>Learning Objectives <small>Up to 10</small></h3>
+{% for i in range(10) %}{% set obj=data.learning_objectives[i] %}
+<div class="objective-row"><span>{{ i+1 }}.</span><select name="objective_verb_{{ i+1 }}"><option value="">Action Verb</option>{% for verb in verbs %}<option value="{{ verb }}" {% if obj.verb == verb %}selected{% endif %}>{{ verb }}</option>{% endfor %}</select><input name="objective_{{ i+1 }}" value="{{ obj.statement }}" placeholder="Learning objective {{ i+1 }}"></div>{% endfor %}
+</section>
+
+<section class="card"><div class="section-title"><span>03</span><div><h2>Training Aids & Methodology</h2><p>Select what you will use during instruction.</p></div></div>
+<h3>Training Aids</h3><div class="checkbox-grid">{% for aid in teaching_aids %}<label class="check"><input type="checkbox" name="training_aids" value="{{ aid }}" {% if aid in data.training_aids %}checked{% endif %}>{{ aid }}</label>{% endfor %}</div>
+<label>Other Training Aid<input name="other_training_aid" value="{{ data.other_training_aid }}"></label>
+<h3>Methodology</h3><div class="checkbox-grid">{% for method in methodologies %}<label class="check"><input type="checkbox" name="methodologies" value="{{ method }}" {% if method in data.methodologies %}checked{% endif %}>{{ method }}</label>{% endfor %}</div>
+<label>Other Methodology<input name="other_methodology" value="{{ data.other_methodology }}"></label></section>
+
+<section class="card"><div class="section-title"><span>04</span><div><h2>References & Previous Lesson</h2></div></div>
+<h3>Bibliography</h3>{% for item in data.bibliography %}<input name="bibliography" value="{{ item }}" placeholder="Reference {{ loop.index }}">{% endfor %}
+<label>Previous Lesson Tie Up<textarea name="previous_lesson_tie_up" rows="4">{{ data.previous_lesson_tie_up }}</textarea></label></section>
+
+<section class="card"><div class="section-title"><span>05</span><div><h2>Introduction & Timing</h2><p>Timing starts here, so your lesson can be tracked from the beginning.</p></div></div>
+<div class="timing-grid"><label>Time Allotted<input name="introduction_time" value="{{ data.introduction_time }}" placeholder="e.g. 5 mins"></label><label>Progress Time<input name="introduction_progress" value="{{ data.introduction_progress }}" placeholder="e.g. 00:05"></label></div>
+<label>Introduction<textarea name="introduction" rows="6" required>{{ data.introduction }}</textarea></label>
+<div class="slogan-toggle"><label class="switch"><input type="checkbox" name="flight_safety_slogan_enabled" {% if data.flight_safety_slogan_enabled %}checked{% endif %}><span></span> Add Flight Safety Slogan at the beginning</label>
+<label>Flight Safety Slogan<input name="flight_safety_slogan" value="{{ data.flight_safety_slogan }}" placeholder="e.g. EITHER DAY OR NIGHT AEROSPACE SAFETY IS OUR MIGHT"></label></div>
+</section>
+
+<section class="card"><div class="section-title"><span>06</span><div><h2>Lesson Coverage</h2><p>Note: Check that lesson coverage is in line with the learning objectives.</p></div></div>
+<label>Lesson Coverage<textarea name="lesson_coverage" rows="4" placeholder="Enter the main lesson coverage here...">{{ data.lesson_coverage }}</textarea></label>
+<div class="coverage-input-grid">
+<div><label>Must Know</label><textarea name="must_know" rows="5">{{ data.must_know }}</textarea><div class="timing-grid mini"><input name="must_know_time" value="{{ data.must_know_time }}" placeholder="Time allotted"><input name="must_know_progress" value="{{ data.must_know_progress }}" placeholder="Progress time"></div></div>
+<div><label>Should Know</label><textarea name="should_know" rows="5">{{ data.should_know }}</textarea><div class="timing-grid mini"><input name="should_know_time" value="{{ data.should_know_time }}" placeholder="Time allotted"><input name="should_know_progress" value="{{ data.should_know_progress }}" placeholder="Progress time"></div></div>
+<div><label>Could Know</label><textarea name="could_know" rows="5">{{ data.could_know }}</textarea><div class="timing-grid mini"><input name="could_know_time" value="{{ data.could_know_time }}" placeholder="Time allotted"><input name="could_know_progress" value="{{ data.could_know_progress }}" placeholder="Progress time"></div></div>
+</div></section>
+
+<section class="card"><div class="section-title"><span>07</span><div><h2>Summary & Assessment</h2></div></div>
+<div class="timing-grid"><label>Time Allotted<input name="summary_time" value="{{ data.summary_time }}"></label><label>Progress Time<input name="summary_progress" value="{{ data.summary_progress }}"></label></div>
+<label>Summary and Conclusion<textarea name="summary" rows="5" required>{{ data.summary }}</textarea></label>
+<label>Questions to the Class <span class="help">(one question per line)</span><textarea name="questions_to_class" rows="5" placeholder="Objective questions only">{{ data.questions_to_class }}</textarea></label>
+<label>Questions by the Class<textarea name="questions_by_class" rows="4">{{ data.questions_by_class }}</textarea></label>
+<label>Home Assignment<textarea name="home_assignment" rows="4" placeholder="Subjective questions only; include word limit and PDC.">{{ data.home_assignment }}</textarea></label></section>
+
+<section class="card"><div class="section-title"><span>08</span><div><h2>Prepared By</h2></div></div><div class="grid-2"><label>Name<input name="prepared_name" value="{{ data.prepared_name }}" required></label><label>Rank<input name="prepared_rank" value="{{ data.prepared_rank }}" required></label></div></section>
+<div class="action-bar"><a class="secondary button" href="{{ url_for('landing') }}">Cancel</a><button class="primary" type="submit">Preview Lesson Plan →</button><button class="secondary" type="reset">Clear</button></div>
+</form></div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script></body></html> -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Write Lesson Plan</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+<div class="page-shell">
+
+<header class="app-header">
+  <a class="back-link" href="{{ url_for('landing') }}">← Home</a>
+  <div>
+    <h1>Build Your Lesson Plan</h1>
+    <p>Complete the sections below, preview your plan, then download as PDF or Word.</p>
+  </div>
+</header>
+
+{% if error %}<div class="alert" role="alert">{{ error }}</div>{% endif %}
+
+<form action="{{ url_for('preview') }}" method="post" id="lessonForm">
+
+  <!-- 01 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>01</span>
+      <div><h2>Lesson Details</h2><p>Basic information about the lesson.</p></div>
+    </div>
+
+    <div class="grid-4">
+      {% for name,label in [('unit','Unit'),('faculty','Faculty'),('branch','Branch'),('course','Course'),('syllabus','Syllabus'),('subject','Subject'),('duration','Duration')] %}
+      <label>{{ label }}
+        <input name="{{ name }}" value="{{ data[name] }}" required>
+      </label>
+      {% endfor %}
+      <label>Date
+        <input type="date" name="date" value="{{ data.date }}">
+      </label>
+      <label class="span-2">Lesson / Topic
+        <input name="lesson" value="{{ data.lesson }}" required>
+      </label>
+      <label class="span-2">Logo Image (optional)
+        <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp">
+        <input type="hidden" name="logo_data" id="logoData" value="{{ data.logo_data }}">
+        <small>Choose a PNG, JPG, or WebP logo smaller than 1 MB.</small>
+      </label>
+    </div>
+  </section>
+
+  <!-- 02 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>02</span>
+      <div><h2>Objectives</h2><p>Define what learners should achieve.</p></div>
+    </div>
+
+    <h3>Training Objective</h3>
+    <div class="training-sentence">
+      <span>By the end of the lesson</span>
+      <select name="training_person" id="training_person" class="inline-select">
+        {% for person in training_persons %}
+        <option value="{{ person }}" {% if data.training_person == person %}selected{% endif %}>{{ person }}</option>
+        {% endfor %}
+      </select>
+      <span>will be able to</span>
+      <input type="text" name="training_objective" value="{{ data.training_objective }}"
+             placeholder="e.g. state the three laws of indices">
+    </div>
+
+    <h3>Learning Objectives <small>Up to 10 — at least one is required</small></h3>
+    {% for i in range(10) %}
+    {% set obj = data.learning_objectives[i] %}
+    <div class="objective-row">
+      <span>{{ i+1 }}.</span>
+      <select name="objective_verb_{{ i+1 }}">
+        <option value="">Action Verb</option>
+        {% for verb in verbs %}
+        <option value="{{ verb }}" {% if obj.verb == verb %}selected{% endif %}>{{ verb }}</option>
+        {% endfor %}
+      </select>
+      <input name="objective_{{ i+1 }}" value="{{ obj.statement }}" placeholder="Learning objective {{ i+1 }}">
+    </div>
+    {% endfor %}
+  </section>
+
+  <!-- 03 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>03</span>
+      <div><h2>Training Aids &amp; Methodology</h2><p>Select what you will use during instruction.</p></div>
+    </div>
+
+    <h3>Training Aids</h3>
+    <label>Training Aids<textarea name="training_aids" rows="3" placeholder="Enter training aids, separated by commas or one per line">{{ data.training_aids|join(', ') if data.training_aids is iterable and data.training_aids is not string else data.training_aids }}</textarea></label>
+    <label>Teaching Aids<textarea name="teaching_aids" rows="3" placeholder="Enter teaching aids, separated by commas or one per line">{{ data.teaching_aids|join(', ') if data.teaching_aids is iterable and data.teaching_aids is not string else data.teaching_aids }}</textarea></label>
+
+    <h3>Methodology</h3>
+    <label>Methodology<textarea name="methodologies" rows="3" placeholder="Enter teaching methodologies, separated by commas or one per line">{{ data.methodologies|join(', ') if data.methodologies is iterable and data.methodologies is not string else data.methodologies }}</textarea></label>
+  </section>
+
+  <!-- 04 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>04</span>
+      <div><h2>References &amp; Previous Lesson</h2></div>
+    </div>
+
+    <h3>Bibliography</h3>
+    <div id="bibliographyList" data-max="{{ max_bibliography }}">
+      {% for item in bibliography_rows %}
+      <input name="bibliography" value="{{ item }}" placeholder="Reference {{ loop.index }}">
+      {% endfor %}
+    </div>
+    <button type="button" class="secondary small-btn" id="addReference">+ Add reference</button>
+
+    <label>Previous Lesson Tie Up
+      <textarea name="previous_lesson_tie_up" rows="4">{{ data.previous_lesson_tie_up }}</textarea>
+    </label>
+  </section>
+
+  <!-- 05 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>05</span>
+      <div><h2>Introduction</h2>
+        <p>Enter the allotted time only. Progressive time is calculated automatically.</p></div>
+    </div>
+
+    <div class="timing-grid">
+      <label>Time Allotted
+        <input name="introduction_time" value="{{ data.introduction_time }}" placeholder="e.g. 5 mins">
+      </label>
+    </div>
+
+    <label>Class will be started with
+      <textarea name="introduction" rows="6" required placeholder="Cover the major points and briefly explain them.">{{ data.introduction }}</textarea>
+    </label>
+
+    <div class="slogan-toggle">
+      <label class="switch">
+        <input type="checkbox" id="sloganEnabled" name="flight_safety_slogan_enabled" {% if data.flight_safety_slogan_enabled %}checked{% endif %}>
+        <span></span> Add Flight Safety Slogan at the top of the plan
+      </label>
+      <label>Flight Safety Slogan
+        <input name="flight_safety_slogan" id="sloganText" value="{{ data.flight_safety_slogan }}"
+               placeholder="e.g. EITHER DAY OR NIGHT AEROSPACE SAFETY IS OUR MIGHT">
+      </label>
+    </div>
+  </section>
+
+  <!-- 06 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>06</span>
+      <div><h2>Lesson Coverage</h2>
+        <p>Note: Check that lesson coverage is in line with the learning objectives.</p></div>
+    </div>
+
+    <div class="timing-grid">
+      <label>Time Allotted
+        <input name="lesson_coverage_time" value="{{ data.lesson_coverage_time }}" placeholder="e.g. 10 mins">
+      </label>
+    </div>
+
+    <label>Lesson Coverage
+      <textarea name="lesson_coverage" rows="4" placeholder="Enter the main lesson coverage here...">{{ data.lesson_coverage }}</textarea>
+    </label>
+
+    <div class="coverage-input-grid">
+      <div>
+        <label for="must_know">Must Know</label><p class="field-note">Note: Check that Must Know is in line with the learning objectives and lesson coverage.</p>
+        <textarea id="must_know" name="must_know" rows="5">{{ data.must_know }}</textarea>
+      </div>
+      <div>
+        <label for="should_know">Should Know</label>
+        <textarea id="should_know" name="should_know" rows="5">{{ data.should_know }}</textarea>
+      </div>
+      <div>
+        <label for="could_know">Could Know</label>
+        <textarea id="could_know" name="could_know" rows="5">{{ data.could_know }}</textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>07</span>
+      <div><h2>Summary &amp; Assessment</h2>
+        <p>Enter allotted time only. Progressive time is calculated automatically.</p></div>
+    </div>
+
+    <div class="timing-grid">
+      <label>Summary &amp; Conclusion — Time Allotted
+        <input name="summary_time" value="{{ data.summary_time }}" placeholder="e.g. 5 mins">
+      </label>
+    </div>
+    <label>Summary and Conclusion
+      <textarea name="summary" rows="5" required>{{ data.summary }}</textarea>
+    </label>
+
+    <div class="assessment-block">
+      <h3>Questions to the Class</h3>
+      <div class="timing-grid">
+        <label>Time Allotted
+          <input name="questions_to_class_time" value="{{ data.questions_to_class_time }}" placeholder="e.g. 3 mins">
+        </label>
+      </div>
+      <label>Questions <span class="help">(one question per line)</span>
+        <textarea name="questions_to_class" rows="5" placeholder="Objective questions only">{{ data.questions_to_class }}</textarea>
+      </label>
+    </div>
+
+    <div class="assessment-block">
+      <h3>Questions by the Class</h3>
+      <div class="timing-grid">
+        <label>Time Allotted
+          <input name="questions_by_class_time" value="{{ data.questions_by_class_time }}" placeholder="e.g. 3 mins">
+        </label>
+      </div>
+      <label>Questions
+        <textarea name="questions_by_class" rows="4">{{ data.questions_by_class }}</textarea>
+      </label>
+    </div>
+
+    <div class="assessment-block">
+      <h3>Home Assignment</h3>
+      <div class="timing-grid">
+        <label>Time Allotted
+          <input name="home_assignment_time" value="{{ data.home_assignment_time }}" placeholder="e.g. 2 mins">
+        </label>
+      </div>
+      <label>Assignment
+        <textarea name="home_assignment" rows="4" placeholder="Subjective questions only; include word limit and PDC.">{{ data.home_assignment }}</textarea>
+      </label>
+    </div>
+
+    <!-- <label>Flight Safety Instruction <span class="help">(optional)</span>
+      <textarea name="flight_safety_instruction" rows="3">{{ data.flight_safety_instruction }}</textarea>
+    </label> -->
+  </section>
+
+  <!-- 08 ------------------------------------------------------------ -->
+  <section class="card">
+    <div class="section-title"><span>08</span>
+      <div><h2>Prepared By</h2></div>
+    </div>
+    <div class="grid-2">
+      <label>Name
+        <input name="prepared_name" value="{{ data.prepared_name }}" required>
+      </label>
+      <label>Rank
+        <input name="prepared_rank" value="{{ data.prepared_rank }}" required>
+      </label>
+    </div>
+  </section>
+
+  <div class="action-bar">
+    <a class="secondary button" href="{{ url_for('landing') }}">Cancel</a>
+    <button class="secondary" type="button" id="clearForm">Clear</button>
+    <button class="primary" type="submit">Preview Lesson Plan →</button>
+  </div>
+
+</form>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson Plan Preview</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body>
+<div class="preview-shell">
+<div class="preview-actions">
+<form method="post" action="{{ url_for('edit') }}">{% for key,values in request.form.lists() %}{% for value in values %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}{% endfor %}<button class="secondary" type="submit">← Edit</button></form>
+<form method="post" action="{{ url_for('download') }}">{% for key,values in request.form.lists() %}{% for value in values %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}{% endfor %}<button class="primary" type="submit">Download PDF ↓</button></form>
+<form method="post" action="{{ url_for('download_word') }}">{% for key,values in request.form.lists() %}{% for value in values %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endfor %}{% endfor %}<button class="primary word-btn" type="submit">Download Word ↓</button></form>
+<button class="secondary" onclick="window.print()">Print</button>
+</div>
+<div class="paper">
+{% if data.logo_data %}<div class="logo-wrap"><img class="lesson-logo" src="{{ data.logo_data }}" alt="Lesson plan logo"></div>{% endif %}<h1>LESSON PLAN</h1>
+{% if data.flight_safety_slogan_enabled and data.flight_safety_slogan %}<div class="paper-slogan">“{{ data.flight_safety_slogan }}”</div>{% endif %}
+<table class="official-table"><tr><th>Unit</th><td>{{ data.unit }}</td><th>Faculty</th><td>{{ data.faculty }}</td></tr>
+<tr><th>Branch</th><td>{{ data.branch }}</td><th>Course</th><td>{{ data.course }}</td></tr>
+<tr><th>Syllabus</th><td>{{ data.syllabus }}</td><th>Subject</th><td>{{ data.subject }}</td></tr>
+<tr><th>Duration</th><td>{{ data.duration }}</td><th>Date</th><td>{{ data.date }}</td></tr>
+<tr><th>Lesson</th><td colspan="3">{{ data.lesson }}</td></tr></table>
+
+<div class="official-section objectives-section"><b>1. Objectives.</b>
+<div class="objective-level"><span>1.1.</span><div><b>Training.</b><div>{{ data.training_text }}</div></div></div>
+<div class="objective-level"><span>1.2.</span><div><b>Learning.</b>
+<div class="nested-list">{% for obj in data.learning_objectives if obj.statement %}<div><span>1.2.{{ loop.index }}.</span> <b>{{ obj.verb }}</b> {{ obj.statement }}</div>{% endfor %}</div></div></div></div>
+
+<div class="official-section"><b>2. Training Aids.</b><ol>{% for item in data.training_aids %}<li>{{ item }}</li>{% endfor %}</ol>{% if data.other_training_aid %}<p>{{ data.other_training_aid }}</p>{% endif %}</div>
+<div class="official-section"><b>3. Bibliography.</b><div class="nested-list">{% for item in data.bibliography if item %}<div>3.{{ loop.index }}. {{ item }}</div>{% endfor %}</div></div>
+<div class="official-section"><b>4. Previous Lesson Tie Up.</b><p>{{ data.previous_lesson_tie_up }}</p></div>
+
+{% set methods = data.methodologies + ([data.other_methodology] if data.other_methodology else []) %}
+{% set teaching = data.teaching_aids or data.training_aids %}
+<table class="official-table two-col"><tr><th>5. METHODOLOGY.</th><th>TEACHING AIDS.</th></tr><tr><td><div class="nested-list">{% for item in methods %}<div>5.{{ loop.index }}. {{ item }}</div>{% endfor %}</div></td><td><div class="nested-list">{% for item in teaching %}<div>5.{{ methods|length + loop.index }}. {{ item }}</div>{% endfor %}</div></td></tr></table>
+
+<table class="official-table timing-table"><tr><th colspan="3">6. INTRODUCTION.</th></tr><tr><th>Content</th><th>Time Allotted</th><th>Progress Time</th></tr><tr><td>{{ data.introduction }}</td><td>{{ data.introduction_time }}</td><td>{{ data.introduction_progress }}</td></tr></table>
+
+<table class="official-table coverage"><tr><th colspan="4">7. LESSON COVERAGE.</th></tr><tr><th colspan="4">{{ data.lesson_coverage }}</th></tr>
+<tr><th>Must Know</th><td><b>Check:</b> Must Know should align with learning objectives and lesson coverage.<br>{{ data.must_know }}</td><th>{{ data.must_know_time }}</th><td>{{ data.must_know_progress }}</td></tr>
+<tr><th>Should Know</th><td>{{ data.should_know }}</td><th>{{ data.should_know_time }}</th><td>{{ data.should_know_progress }}</td></tr>
+<tr><th>Could Know</th><td>{{ data.could_know }}</td><th>{{ data.could_know_time }}</th><td>{{ data.could_know_progress }}</td></tr></table>
+
+<div class="official-section"><b>8. Summary and Conclusion.</b><div class="timing-line">Time Allotted: {{ data.summary_time }} &nbsp; | &nbsp; Progress Time: {{ data.summary_progress }}</div><p>{{ data.summary }}</p></div>
+<div class="official-section"><b>9. Check: Questions to the Class (Objective Questions Only).</b><div class="nested-list">{% for item in data.questions_to_class.splitlines() if item.strip() %}<div>9.{{ loop.index }}. {{ item.strip() }}</div>{% endfor %}</div></div>
+<div class="official-section"><b>10. Questions by the Class.</b><div class="nested-list">{% for item in data.questions_by_class.splitlines() if item.strip() %}<div>10.{{ loop.index }}. {{ item.strip() }}</div>{% endfor %}</div></div>
+<div class="official-section"><b>11. Home Assignment.</b><div class="nested-list">{% for item in data.home_assignment.splitlines() if item.strip() %}<div>11.{{ loop.index }}. {{ item.strip() }}</div>{% endfor %}</div></div><hr class="after-assignment">
+{% if data.flight_safety_slogan_enabled and data.flight_safety_slogan %}<div class="paper-slogan">“{{ data.flight_safety_slogan }}”</div>{% endif %}
+<table class="official-table signatures"><tr><th>12. Prepared by</th><th>Checked &amp; Approved by</th></tr><tr><td>Name: {{ data.prepared_name }}<br>Rank: {{ data.prepared_rank }}</td><td></td></tr></table>
+<div class="page-break"></div><div class="official-section"><b>13. Review:</b></div>
+<table class="official-table review"><tr><th>Date</th><th>Instructor</th><th>Signature</th><th>Comments</th></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></table>
+<div class="remarks-box"><b>14. Remarks by Senior Instructor.</b></div>
+<div class="remarks-box large"><b>15. Remarks by Head of Faculty/Chief Instructor.</b></div>
+</div></div></body></html>

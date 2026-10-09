@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LessonFlow — Lesson Plan Generator</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="landing">
+<div class="hero">
+  <div class="hero-sky" aria-hidden="true">
+    <svg viewBox="0 0 180 110" role="presentation">
+      <path d="M12 70 76 56l18-34 10-2-7 32 54-11 13 6-68 24-1 21 16 12v5L94 98l-18 6-2-5 12-13-2-19-61 14z"/>
+    </svg>
+  </div>
+  <nav class="top-nav">
+    <a class="brand" href="{{ url_for('landing') }}" aria-label="LessonFlow home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>LessonFlow<small>LESSON PLANNER</small></span>
+    </a>
+    <a class="nav-cta" href="{{ url_for('index') }}">Create a plan <span aria-hidden="true">↗</span></a>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-copy">
+      <span class="eyebrow"><i></i> INSPIRED BY INDIAN AIR FORCE PRECISION</span>
+      <h1>Plan with precision.<br>Teach with <em>purpose.</em></h1>
+      <p>Create structured lesson plans with timing, lesson coverage, objectives, teaching aids and a polished PDF or editable Word document — all in one place.</p>
+      <a class="hero-btn" href="{{ url_for('index') }}">Create your lesson plan <span aria-hidden="true">→</span></a>
+      <p class="hero-quote"><strong>“it is simple until you make it complicated”</strong></p>
+      <div class="hero-stats" aria-label="Three simple steps">
+        <div><strong>01</strong><span>Write</span></div><b aria-hidden="true"></b>
+        <div><strong>02</strong><span>Preview</span></div><b aria-hidden="true"></b>
+        <div><strong>03</strong><span>Download</span></div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="card-topline"><span>YOUR NEXT CLASS, WELL PLANNED</span><span class="ready-pill"><i></i> READY TO BUILD</span></div>
+      <div class="mock-head"><span>LESSON PLAN</span><b>● ● ●</b></div>
+      <div class="mock-title">A clear plan for<br><span>confident teaching.</span></div>
+      <div class="mock-line wide"></div><div class="mock-line"></div>
+      <div class="mock-grid"><div></div><div></div><div></div><div></div></div>
+      <div class="mock-section">INTRODUCTION <span>TIME ALLOTTED &nbsp; PROGRESS</span></div>
+      <div class="mock-lines"></div><div class="mock-lines short"></div>
+      <div class="mock-section">LESSON COVERAGE</div>
+      <div class="mock-coverage"><b>MUST KNOW</b><b>SHOULD KNOW</b><b>COULD KNOW</b></div>
+      <div class="card-footer"><span>STRUCTURED. CLEAR. PRINT-READY.</span><span class="tricolor-rule" aria-hidden="true"></span></div>
+    </div>
+  </div>
+</div>
+<section class="features">
+  <div class="features-heading"><span>MADE FOR THE CLASSROOM</span><h2>Everything in its right place.</h2><p>From the first objective to the final download, focus on teaching—not formatting.</p></div>
+  <div class="feature-grid">
+    <div><span class="feature-icon">01</span><h3>Keep time in view</h3><p>Add allotted and progressive timings from the introduction onward.</p></div>
+    <div><span class="feature-icon">02</span><h3>Refine as you go</h3><p>Preview your plan, return to the form, and keep your work in place.</p></div>
+    <div><span class="feature-icon">03</span><h3>Ready when you are</h3><p>Download a clean PDF or an editable Word document for your next class.</p></div>
+  </div>
+</section>
+</body></html>
